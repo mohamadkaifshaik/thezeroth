@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go test:*)", "Bash(go build:*)", "Bash(go vet:*)", "Bash(golangci-lint run:*)",
+      "Bash(flutter test:*)", "Bash(flutter analyze:*)", "Bash(dart format:*)",
+      "Bash(terraform fmt:*)", "Bash(terraform validate:*)", "Bash(terraform plan:*)",
+      "Bash(docker compose:*)", "Bash(make:*)", "Bash(git status)", "Bash(git diff:*)", "Bash(git log:*)"
+    ],
+    "ask": [
+      "Bash(terraform apply:*)", "Bash(aws:*)", "Bash(git push:*)", "Bash(gh workflow run:*)", "Bash(gh release:*)"
+    ],
+    "deny": [
+      "Read(./.env)", "Read(./.env.*)", "Bash(terraform destroy:*)", "Bash(rm -rf:*)", "Bash(git push --force:*)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      { "matcher": "Edit|Write", "hooks": [ { "type": "command", "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/format.sh" } ] }
+    ]
+  }
+}

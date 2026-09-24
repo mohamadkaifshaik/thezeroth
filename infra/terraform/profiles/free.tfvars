@@ -1,0 +1,43 @@
+# FREE profile: minimum-cost, single standalone account, single-AZ data tier. Beta-scale only.
+# Account: credit-based (created after 15 Jul 2025). Region: ap-south-2 (Hyderabad).
+profile                    = "free"
+aws_region                 = "ap-south-2"
+cloudfront_cert_region     = "us-east-1"  # CloudFront ACM certs must live here
+az_count                   = 2            # RDS subnet group needs 2 AZs; data tier still single-AZ
+enable_nat_gateway         = false        # ~$33/mo: never in free profile
+enable_vpc_interface_endpoints = false    # paid; gateway endpoints for S3/DynamoDB only (free)
+edge_mode                  = "cloudfront_direct"  # CloudFront -> EC2 origin; "alb" costs ~$20+/mo extra
+enable_alb                 = false
+compute_type               = "ec2"        # ECS on EC2, bridge networking
+ecs_network_mode           = "bridge"
+api_host_port              = 8443         # fixed host port (Caddy TLS sidecar), no ALB dynamic ports
+ec2_instance_type          = "t3.micro"
+ec2_credit_mode            = "standard"   # avoid unlimited-mode surprise charges
+ec2_asg_min                = 1
+ec2_asg_max                = 1
+ec2_root_volume_gb         = 30
+ec2_swap_gb                = 1
+ecs_min_healthy_percent    = 0
+ecs_max_percent            = 100
+db_engine                  = "postgres"   # RDS, NOT Aurora
+db_instance_class          = "db.t4g.micro"
+db_allocated_storage_gb    = 20
+db_multi_az                = false
+db_backup_retention_days   = 7
+enable_rds_proxy           = false
+cache_engine               = "valkey"
+cache_node_type            = "cache.t3.micro"
+cache_num_nodes            = 1
+cache_multi_az             = false
+enable_opensearch          = false        # search via Postgres FTS
+enable_waf                 = false
+enable_video               = false        # MediaConvert is not in ap-south-2
+use_secrets_manager        = false        # SSM Parameter Store Standard
+use_customer_kms_keys      = false        # AWS-managed keys
+enable_guardduty           = false        # enable before public launch
+enable_container_insights  = false
+enable_vpc_flow_logs       = false
+log_retention_days         = 7
+ecr_keep_last_images       = 5
+# Gross monthly cost alerts (credits EXCLUDED, so you see burn vs credit balance). Verify the Budgets "exclude credits" setting.
+budget_alerts_usd          = [20, 40, 60]
